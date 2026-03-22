@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Sayuri ❤️</title>
+    <style>
+        :root {
+            --noche: #020617;
+            --oro: #fbbf24;
+            --rosa-fuerte: #ff4d6d;
+            --neon: #ff0055;
+        }
+
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: var(--noche); font-family: 'Georgia', serif; }
+
+        /* --- PANTALLA 1: INICIAL (TUYA) --- */
+        #pantalla-carta-inicial {
+            position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+            z-index: 100; transition: transform 1.2s ease-in-out; background: #fff0f3;
+        }
+        .carta-inicial { background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 280px; }
+        
+        .btn { background: var(--rosa-fuerte); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; margin-top: 15px; font-weight: bold; transition: 0.3s; }
+        .btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--rosa-fuerte); }
+
+        /* --- PANTALLA 2: JARDÍN/CORAZÓN (TUYA) --- */
+        #pantalla-jardin {
+            position: absolute; top: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #111827 0%, #020617 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transform: translateY(100%); transition: transform 1.2s ease-in-out;
+        }
+        #escena { position: relative; width: 500px; height: 500px; display: flex; justify-content: center; align-items: center; transition: transform 1s ease-in-out, opacity 1s; }
+        .flor { position: absolute; opacity: 0; transform: translate(-50%, -50%) scale(0); transition: opacity 0.6s, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2; }
+        .petalo { position: absolute; border-radius: 50% 50% 20% 80%; }
+        .f-roja .petalo { background: linear-gradient(135deg, #ef4444, #7f1d1d); border-radius: 50%; width: 22px; height: 28px; }
+        .f-amarilla .petalo { background: linear-gradient(135deg, #fbbf24, #d97706); width: 18px; height: 32px; }
+        .f-tulipan .petalo { background: linear-gradient(#ff8fa3, #ff4d6d); border-radius: 40% 40% 20% 20%; width: 16px; height: 26px; }
+        .f-lirio .petalo { background: linear-gradient(#fdf4ff, #fbcfe8); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); width: 14px; height: 24px; }
+        .mensaje-final { margin-bottom: 20px; color: #fef3c7; text-align: center; opacity: 0; transition: 2s; font-size: 1.6rem; font-weight: bold; text-shadow: 0 0 15px var(--oro); z-index: 10; }
+
+        /* --- PANTALLA 3: GIRASOLES (CIELO ESTRELLADO) --- */
+        #pantalla-girasoles {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transform: translateY(100%); transition: transform 1.2s ease-in-out; z-index: 150;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+        }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .girasol { position: absolute; width: 100px; height: 100px; transition: 1.5s ease; }
+        .centro-g { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; background: radial-gradient(#5d4037, #2c1810); border-radius: 50%; z-index: 10; }
+        .petalo-g { position: absolute; top: 50%; left: 50%; width: 12px; height: 45px; background: linear-gradient(to top, #ff8f00, #ffc107); border-radius: 50% 50% 10% 10%; transform-origin: bottom center; }
+
+        /* --- PANTALLA 4: CARTA FINAL (TUYA) --- */
+        #pantalla-texto {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff0f3; display: flex; justify-content: center; align-items: center;
+            transform: translateY(100%); transition: transform 1.2s ease-in-out; z-index: 200;
+        }
+        .hoja-carta { background: white; width: 80%; max-width: 500px; padding: 40px; border-radius: 5px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); line-height: 1.6; color: #444; border-left: 2px solid #ffb3c1; max-height: 80vh; overflow-y: auto; }
+        
+        @keyframes latido-suave { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        #escena.activo { animation: latido-suave 4s infinite ease-in-out; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Inicio -->
+    <div id="pantalla-carta-inicial">
+        <div class="carta-inicial">
+            <h1 style="color: var(--rosa-fuerte)">Para Ti ❤️</h1>
+            <p>Algo florece pensando en ti...</p>
+            <button class="btn" onclick="iniciar()">Presiona aquí ✨</button>
+        </div>
+    </div>
+
+    <!-- 2. Corazón (Tu lógica original) -->
+    <div id="pantalla-jardin">
+        <h1 class="mensaje-final" id="msg">Una flor por cada razón para quererte ❤️</h1>
+        <div id="escena"></div>
+        <button id="btn-final" class="btn" style="opacity:0; visibility:hidden; background:var(--oro); color:#431407;" onclick="irAGirasoles()">Ver algo más ✨</button>
+    </div>
+
+    <!-- 3. Girasoles (Cielo Estrellado) -->
+    <div id="pantalla-girasoles">
+        <div id="estrellas-bg"></div>
+        <h1 style="color:white; text-align:center; text-shadow:0 0 15px var(--oro); margin-bottom:50px;">No me olvidé de tus flores amarillas 🌻</h1>
+        <div id="contenedor-girasoles" style="position:relative; width:300px; height:300px;"></div>
+        <button class="btn" style="background:var(--oro); color:black; margin-top:50px;" onclick="desvanecerYCarta()">Presióname ✨</button>
+    </div>
+
+    <!-- 4. Carta -->
+    <div id="pantalla-texto">
+        <div class="hoja-carta">
+            <h2 style="color: var(--rosa-fuerte)">Para Sayuri Yamile Salasar Zarate ... ❤️</h2>
+            <p>
+                Querida Sayuri, la verdad el decir lo que pienso y siento siemore ha sido un gran problema desde pequeño, pero cuendo lo hago cada palabra es totalmente verdad.
+                Es por eso que quiero decirte que creo que eres asombrosa, no solo por la gran belleza fisica que tienes, porque ya te lo he dicho ere muy linda y lo digo de verdad , ante mis ojos siempre desde la primera vez que te vi ese dia que nos conocimos, 
+                he creido que eres bastante hermosa, no solo por el como con cada vestimenta resaltas, si no por eso que fue lo primeero que vi tan "loco" de tí, que es esa mirada que nunca habia visto en alguien, y no se si lo recuerdas pero cuando nos conocimos, 
+                y estabamos hablando de como nos dibujariamos mencionaste que serias como el cielo , y la verdad me dejaste bastante impactado pero lo que te dije fue cinsero , sobre como el cielo a pesar de sus cambios ya fuera soleado, nublado, lloviendo, el del atardecer, siempre se ve hermoso.
+                Y eso es lo que veo en ti, a pesar de tus cambios, siempre te ves hermosa, y no solo por tu belleza fisica, si no por tu personalidad, por tu forma de ser, por tu forma de pensar, por tu forma de actuar, por tu forma de ser tan dulce y amable con los demas, 
+                por tu forma de ser tan inteligente y creativa, por tu forma de ser tan divertida y alegre, por tu forma de ser tan fuerte y valiente, por tu forma de ser tan unica y especial, por tu forma de ser tan maravillosa en general.
+                Eres una persona increible y me siento muy afortunado de haberte conocido y de poder compartir momentos contigo.
+                En tan poco tiempo que te has vuelto tan especial para mi, que eres la primera aparte de la luna con la qu ehe podido hablar sinceramente del como me siento en realidad y jamas voy a olvidarlo, quisiera agradecerte por todo lo que has hecho por mi , por cada detalle y accion , de corazon de agradesco por todo eso
+                y bueno la verdad ya no se como expresar lo demas, asi que hasta aqui voy a dejar esta carta.
+            </p>
+            <p style="text-align: right; font-weight: bold;">Con cariño y sinceridad, Rodri</p>
+        </div>
+    </div>
+
+    <script>
+        // --- PARTE 1: CORAZÓN (TU CÓDIGO) ---
+        function iniciar() {
+            document.getElementById('pantalla-carta-inicial').style.transform = 'translateY(-100%)';
+            document.getElementById('pantalla-jardin').style.transform = 'translateY(0)';
+            const secuencia = [
+                { tipo: 'f-roja', escala: 12, delay: 1000, cant: 50 },
+                { tipo: 'f-amarilla', escala: 10, delay: 3500, cant: 40 },
+                { tipo: 'f-tulipan', escala: 8, delay: 6000, cant: 35 },
+                { tipo: 'f-lirio', escala: 6, delay: 8500, cant: 30 }
+            ];
+            secuencia.forEach(paso => {
+                setTimeout(() => crearCorazonDibujado(paso.tipo, paso.escala, paso.cant), paso.delay);
+            });
+            setTimeout(() => { 
+                document.getElementById('msg').style.opacity = '1'; 
+                document.getElementById('escena').classList.add('activo');
+                const btn = document.getElementById('btn-final');
+                btn.style.opacity = '1'; btn.style.visibility = 'visible';
+            }, 11500);
+        }
+
+        function crearCorazonDibujado(tipo, escala, cantidad) {
+            const escena = document.getElementById('escena');
+            for (let i = 0; i < cantidad; i++) {
+                const t = i / cantidad * 2 * Math.PI;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                const flor = document.createElement('div');
+                flor.className = `flor ${tipo}`;
+                flor.style.left = `calc(50% + ${x * escala}px)`;
+                flor.style.top = `calc(50% + ${y * escala}px)`;
+                for (let j = 0; j < 5; j++) {
+                    const p = document.createElement('div'); p.className = 'petalo';
+                    p.style.transform = `rotate(${j * 72}deg) translate(8px)`;
+                    flor.appendChild(p);
+                }
+                escena.appendChild(flor);
+                setTimeout(() => { flor.style.opacity = '1'; flor.style.transform = 'translate(-50%, -50%) scale(1)'; }, i * 35);
+            }
+        }
+
+        // --- PARTE 2: GIRASOLES ---
+        function irAGirasoles() {
+            document.getElementById('pantalla-jardin').style.transform = 'translateY(-100%)';
+            document.getElementById('pantalla-girasoles').style.transform = 'translateY(0)';
+            crearEstrellas();
+            crearGirasoles();
+        }
+
+        function crearEstrellas() {
+            const bg = document.getElementById('estrellas-bg');
+            for (let i = 0; i < 100; i++) {
+                const s = document.createElement('div'); s.className = 'star';
+                s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
+                const size = Math.random() * 2; s.style.width = size + 'px'; s.style.height = size + 'px';
+                s.style.setProperty('--d', Math.random() * 3 + 2 + 's');
+                bg.appendChild(s);
+            }
+        }
+
+        function crearGirasoles() {
+            const container = document.getElementById('contenedor-girasoles');
+            const pos = [{x:0,y:0,s:1.2}, {x:-70,y:-50,s:0.9}, {x:70,y:-50,s:0.9}, {x:-80,y:50,s:1}, {x:80,y:50,s:1}, {x:0,y:80,s:1.1}];
+            pos.forEach((p, i) => {
+                const g = document.createElement('div'); g.className = 'girasol';
+                g.style.left = `calc(50% + ${p.x}px - 50px)`; g.style.top = `calc(50% + ${p.y}px - 50px)`;
+                g.style.transform = 'scale(0)';
+                for (let j=0; j<18; j++) {
+                    const pet = document.createElement('div'); pet.className = 'petalo-g';
+                    pet.style.transform = `translate(-50%, -100%) rotate(${j*20}deg)`;
+                    g.appendChild(pet);
+                }
+                const c = document.createElement('div'); c.className = 'centro-g';
+                g.appendChild(c); container.appendChild(g);
+                setTimeout(() => { g.style.transform = `scale(${p.s})`; }, i * 200 + 500);
+            });
+        }
+
+        function desvanecerYCarta() {
+            const flores = document.querySelectorAll('.girasol');
+            flores.forEach((f, i) => {
+                setTimeout(() => { f.style.opacity = '0'; f.style.transform += ' translateY(-20px) scale(0)'; }, i * 600);
+            });
+            setTimeout(() => {
+                document.getElementById('pantalla-girasoles').style.transform = 'translateY(-100%)';
+                document.getElementById('pantalla-texto').style.transform = 'translateY(0)';
+            }, flores.length * 600 + 1000);
+        }
+    </script>
+</body>
+</html>
